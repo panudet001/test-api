@@ -1,0 +1,17 @@
+{
+    "apps": [
+        {
+            "exec_mode": "cluster",
+            "instances": 1,
+            "script": "dist/main",
+            "name": "BACKEND",
+            "retain": "all",
+            "instance_var": "INSTANCE_ID",
+            "compress": true,
+            "env": {
+                "APP_HOST": "0.0.0.0",
+                "APP_PORT": "5000"
+            }
+        }
+    ]
+}

@@ -1,0 +1,72 @@
+version: '3.7'
+
+services:
+  backend:
+    container_name: backend
+    build:
+      context: .
+      dockerfile: ./app.Dockerfile.Dev
+      target: development
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 5000:5000
+      - 9550:9550
+    command: npm run start:debug
+    env_file:
+      - .env
+    networks:
+      - snn
+    depends_on:
+       - mysql
+  #     - redis
+  #     - postgres
+  # redis:
+  #   container_name: redis
+  #   image: redis:5
+  #   networks:
+  #     - snn
+  mysql:
+    container_name: mysql
+    image: mysql:5.7
+    networks:
+      - snn
+    env_file:
+      - ./dockers/mysql.env
+    volumes:
+      - mysqldata:/var/lib/mysql
+    ports:
+      - "33006:3306"
+  phpmyadmin:
+    container_name: phpmyadmin
+    image: phpmyadmin/phpmyadmin
+    networks:
+      - snn
+    depends_on:
+      - mysql
+    ports:
+      - 6388:80
+    environment:
+      - PMA_HOST=mysql
+    volumes:
+      - ./dockers/php.ini:/usr/local/etc/php/php.ini
+  # postgres:
+  #   container_name: postgres
+  #   image: postgres:12
+  #   networks:
+  #     - snn
+  #   environment:
+  #     POSTGRES_PASSWORD: ${DB_PASSWORD}
+  #     POSTGRES_USER: ${DB_USERNAME}
+  #     POSTGRES_DB: ${DB_DATABASE_NAME}
+  #     PG_DATA: /var/lib/postgresql/data
+  #   ports:
+  #     - 5432:5432
+  #   volumes:
+  #     - pgdata:/var/lib/postgresql/data
+networks:
+  snn:
+volumes:
+  # pgdata:
+  mysqldata:

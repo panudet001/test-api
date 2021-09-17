@@ -1,0 +1,43 @@
+FROM node:14.16.1-alpine As development
+
+RUN apk add tzdata
+ENV TZ=Asia/Bangkok
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install -g npm@latest
+
+RUN npm config set unsafe-perm true \
+    && npm install --only=development \
+    && npm install -g rimraf \
+    && npm install core-util-is
+
+COPY . .
+
+RUN npm run build
+
+FROM node:14.16.1-alpine as production
+
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm config set unsafe-perm true \
+    && npm install --only=production \
+    && npm install -g phantomjs --force \
+    && npm install -g pm2
+
+COPY . .
+
+COPY --from=development /usr/src/app/dist ./dist
+
+# CMD ["node", "dist/main"]
+
+#EXPOSE 5000
+
+CMD [ "pm2-runtime", "start", "pm2-dev.json" ]
