@@ -8,7 +8,8 @@ export class AnswerController {
 
     @Get('/view/:email?')
     async editQuiz(@Param() params) {
-      return await this.AnsService.getAns(params);
+      const data = await this.AnsService.getAns(params);
+      return data
     }
 
     @Post('/add')

@@ -1,4 +1,5 @@
 import { Entity, Column, PrimaryGeneratedColumn ,OneToMany,JoinColumn, BaseEntity, OneToOne, ManyToOne} from 'typeorm';
+import { result_item } from './resultItem.entity';
 import { quiz_item } from './subItem.entity';
 
 

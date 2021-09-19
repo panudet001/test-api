@@ -8,13 +8,19 @@ export class UserController {
     constructor(private readonly userService: UserService) {}
 
     @Get('/view/:id?') 
-    async getUsers(@Param() params): Promise<users[]>{
+    async getUsers(@Param() params){
       const id = (params.id)? params.id: 0
+     
       if(id > 0){
-        return await this.userService.selectUser(id);
+          const result = await this.userService.selectUser(id);
+          return result
+
       }else{
-        return await this.userService.userAll();
+        const result = await this.userService.userAll();
+        return result
       }
+
+      
       
     }
 
@@ -23,8 +29,8 @@ export class UserController {
     async addUser(@Body() body,@Param() params) { 
         const id = (params.id)? params.id: 0
         if(id > 0){
-          await this.userService.upDataUser(id,body);
-          return 2
+          const data = await this.userService.upDataUser(id,body);
+          return data
     
         }else{
           const data = await this.userService.addUsers(body);
@@ -37,13 +43,15 @@ export class UserController {
 
 
     @Get("/type/:id?") 
-    async getType(@Param() params): Promise<user_type[]>{
+    async getType(@Param() params){
       const id = (params.id)? params.id: 0
+      let data
       if(id > 0){
-        return await this.userService.selectType(id);
+        data = await this.userService.selectType(id);
       }else{
-        return await this.userService.typeAll();
+        data =  await this.userService.typeAll();
       }
+      return data
     }
 
     @Post('/typeAdd/:id?')

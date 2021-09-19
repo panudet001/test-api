@@ -1,4 +1,5 @@
 import { Body, Controller, Get, HttpCode, HttpStatus, Param, Post } from '@nestjs/common';
+import { count } from 'console';
 import { quiz_sub } from 'src/entity/sub.entity';
 import { quiz_set } from '../entity/set.entity';
 import { quiz_title } from '../entity/title.entity';
@@ -8,14 +9,31 @@ import { QuizService } from './quiz.service';
 export class QuizController {
     constructor(private readonly quizService: QuizService) {}
 
+
+    @Get("/user/:id")
+    async getsetQuiz(@Param() params){
+      const data = await this.quizService.selectSetQuiz(params.id);
+      return data
+    }
+
+    @Get("/check/:sub/:id")
+    async getcheckQuiz(@Param() params){
+      const data = await this.quizService.checkSetQuiz(params);
+      return data
+    }
+
+
     @Get("title/:id?") 
     async getTitle(@Param() params): Promise<quiz_title[]>{
       const id = (params.id)?params.id:0
+      let data
       if(id > 0){
-        return await this.quizService.selectTitle(id);
+        data = await this.quizService.selectTitle(id);
       }else{
-        return await this.quizService.TitleAll();
+        data = await this.quizService.TitleAll();
       }
+
+      return data
       
     }
 
@@ -33,13 +51,15 @@ export class QuizController {
     }
 
     @Get("/set/:id?") 
-    async getSet(@Param() params): Promise<quiz_set[]>{
+    async getSet(@Param() params){
       const id = (params.id)?params.id:0
+      let data
       if(id > 0){
-        return await this.quizService.selectSet(id);
+        data = await this.quizService.selectSet(id);
       }else{
-        return await this.quizService.setAll();
+        data = await this.quizService.setAll();
       }
+      return data
     }
 
     @Post('/addSet/:id?')
@@ -58,19 +78,27 @@ export class QuizController {
     
     @Get("/view/set")
     async getSetQuiz(){
-      return await this.quizService.getSetQuiz();
+      const data = await this.quizService.getSetQuiz();
+      return data
     }
+
+    @Get("/dropdownSet")
+    async selectSetQuiz(){
+      const data = await this.quizService.dropdownSet();
+      return data
+    }
+
 
     @Get("/view/sub/:id")
     async getsubQuiz(@Param() params: number){
       return await this.quizService.getsubQuiz(params);
     }
 
-    @Get("/view/add/:id?")
-    async getView(@Param() params: number){
-      return await this.quizService.getQuiz(params);
+    @Get("/view/add/:id")
+    async getView(@Param() params){
+      const data = await this.quizService.getQuiz(params);
+      return data
     }
-
 
 
    
@@ -84,7 +112,8 @@ export class QuizController {
     
     @Get('/editQuiz/:id')
     async editQuiz(@Param() params) {
-      return await this.quizService.upSup(params);
+      const data = await this.quizService.upSup(params);
+      return data
     }
 
     @Post('/upQuiz/:id')
@@ -92,6 +121,15 @@ export class QuizController {
     async upQuiz(@Param() params,@Body() body) {
         
         await this.quizService.editquiz(params,body);
+       
+    }
+
+    @Post('ans/:id')
+    @HttpCode(HttpStatus.CREATED)
+    async ans(@Param() params,@Body() body) {
+        
+       const data = await this.quizService.ansQuiz(params,body);
+       return data
        
     }
 

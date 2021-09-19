@@ -17,7 +17,7 @@ export class AnswerService {
     async getAns(params){
         const email = (params.email)?params.email:0
         let sql = `select result.id as id, email, title, fname,lname,nickname,birthday,age,province,school,room,name_set,name_sub,exp_date,
-        date,star,end,result.answer as answer,result.status as status
+        date,star,end,result.answer as answer,result.status as status,quiz_sub.id as subId,totel
         from result 
         left join users on users.id = result.user_id 
         left join quiz_sub on quiz_sub.id = result.sub_id 
@@ -27,7 +27,7 @@ export class AnswerService {
             sql = sql + ` where email = "${email}" `
         } 
 
-        console.log(sql)
+        //console.log(sql)
 
         let quizs = await this.resultRepository.query(sql)
         
@@ -46,17 +46,26 @@ export class AnswerService {
                 school: quiz.school,
                 room: quiz.room,
                 set: quiz.name_set,
+                subId: quiz.subId,
                 sub: quiz.name_sub,
                 exp : quiz.exp_date,
                 today: quiz.date,
                 star : quiz.star,
                 end :quiz.end,
-                answer:  quiz.answer.split(','), 
-                start: quiz.status.split(',')
+                totel :quiz.totel,
+                answer:  quiz.answer, 
+                start: quiz.status
             })
         })
 
-        return result
+        return {
+            message: "success",
+            statusCode: 200000,
+            data : result
+                       
+        }
+
+       
 
 
     }

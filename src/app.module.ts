@@ -20,11 +20,11 @@ import { ConfigModule } from '@nestjs/config';
     ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 33006,
-      username: 'root',
-      password: 'root',
-      database: 'quiz',
+      host: process.env.TYPEORM_HOST || 'localhost',
+      port: parseInt(process.env.TYPEORM_PORT) || 33006,
+      username: process.env.TYPEORM_USERNAME,
+      password: process.env.TYPEORM_PASSWORD,
+      database: process.env.TYPEORM_DATABASE,
       entities: [
         users,user_type,quiz_title,quiz_set,quiz_sub,quiz_item,result,result_item
       ],

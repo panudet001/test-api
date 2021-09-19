@@ -15,11 +15,23 @@ export class UserService {
       ) {}
 
       async userAll() {
-        return await this.userRepository.find({relations: ["userType"]});
+        const result = await this.userRepository.find({relations: ["userType"]});
+        return {
+          message: "success",
+          statusCode: 200000,
+          data: result
+        }
       }
 
       async selectUser(id){
-        return await this.userRepository.find({where:{id:id},relations: ["userType"]});
+        const result = await this.userRepository.find({where:{id:id},relations: ["userType"]});
+
+        return {
+          message: "success",
+          statusCode: 200000,
+          data: result
+        }
+
       }
 
       async upDataUser(id,body){
@@ -37,6 +49,13 @@ export class UserService {
         user.start = body.start;
         user.set_Quiz = body.set_Quiz;
         await this.userRepository.save(user);
+
+        const result = await this.userRepository.findOne({ where: { id: id } });
+        return {
+          message: "success",
+          statusCode: 200000,
+          data: result
+        }
 
       }
 
@@ -83,13 +102,25 @@ export class UserService {
  
      }
 
-     async typeAll(): Promise<user_type[]> {
+     async typeAll() {
        
-      return await this.typeRepository.find();
+      const result = await this.typeRepository.find();
+
+      return {
+        message: "success",
+        statusCode: 200000,
+        data: result
+      }
     }
 
     async selectType(id){
-      return await this.typeRepository.find({where:{id:id}});
+      const result = await this.typeRepository.find({where:{id:id}});
+
+      return {
+        message: "success",
+        statusCode: 200000,
+        data: result
+      }
     }
 
     async addType(data) {
