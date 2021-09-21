@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { users } from '../entity/users.entity';
 import { Repository } from 'typeorm';
 import { user_type } from '../entity/type.entity';
+import { admin } from 'src/entity/admin.entity';
 
 @Injectable()
 export class UserService {
@@ -11,6 +12,8 @@ export class UserService {
         private readonly userRepository: Repository<users>,
         @InjectRepository(user_type)
         private readonly typeRepository: Repository<user_type>,
+        @InjectRepository(admin)
+        private readonly adminRepository: Repository<admin>,
        
       ) {}
 
@@ -34,6 +37,45 @@ export class UserService {
 
       }
 
+
+      async checkLogin (data){
+        const email = data.email
+        const result = await this.userRepository.find({where:{email:email},relations: ["userType"]});
+        if(result){
+          return {
+            message: "success",
+            statusCode: 200000,
+            data: result
+          }
+        }else{
+          return {
+            message: "error",
+            statusCode: 403004,
+            data: "กรอกอีเมลไม่ถูกต้อง"
+          }
+        }
+
+      }
+
+      async checkLoginAdmin(data){
+        
+        const email = data.email
+        const result = await this.adminRepository.find({where:{email:email}});
+        if(result){
+          return {
+            message: "success",
+            statusCode: 200000,
+            data: result
+          }
+        }else{
+          return {
+            message: "error",
+            statusCode: 403004,
+            data: "กรอกอีเมลไม่ถูกต้อง"
+          }
+        }
+      }
+
       async upDataUser(id,body){
         const user = await this.userRepository.findOne({ where: { id: id } });
         user.email = body.email;
@@ -48,6 +90,7 @@ export class UserService {
         user.room = body.room;
         user.start = body.start;
         user.set_Quiz = body.set_Quiz;
+        user.exp_date = body.exp
         await this.userRepository.save(user);
 
         const result = await this.userRepository.findOne({ where: { id: id } });
@@ -72,9 +115,10 @@ export class UserService {
 
       async addUsers(data) {
 
-        const email = await this.userRepository.findOne({where: {email:data.email}})
+        // const email = await this.userRepository.findOne({where: {email:data.email}})
+        
 
-        if(!email){
+        // if(!email){
             const addUser = new users();
              addUser.title = data.title,
              addUser.fname = data.fname,
@@ -93,10 +137,10 @@ export class UserService {
              addUser.last_edit_time = new Date(),
  
             await this.userRepository.save(addUser);
-            return 1
-        }else{
-          return 0
-        }
+            
+        // }else{
+        //   return 0
+        // }
 
         
  

@@ -9,11 +9,11 @@ import { quiz_set } from './entity/set.entity';
 import { quiz_item } from './entity/subItem.entity';
 import { quiz_sub } from './entity/sub.entity';
 import { result } from './entity/result.entity';
-import { result_item } from './entity/resultItem.entity';
 import { UserModule } from './user/user.module';
 import { QuizModule } from './quiz/quiz.module';
 import { AnswerModule } from './answer/answer.module';
 import { ConfigModule } from '@nestjs/config';
+import { admin } from './entity/admin.entity';
 
 @Module({
   imports: [
@@ -26,7 +26,7 @@ import { ConfigModule } from '@nestjs/config';
       password: process.env.TYPEORM_PASSWORD,
       database: process.env.TYPEORM_DATABASE,
       entities: [
-        users,user_type,quiz_title,quiz_set,quiz_sub,quiz_item,result,result_item
+        users,user_type,quiz_title,quiz_set,quiz_sub,quiz_item,result,admin
       ],
       // entities: ['../typeorm/entities/*.ts'],
 
